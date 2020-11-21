@@ -41,7 +41,7 @@ def node_average_model(input, params, filters=None, dropout_keep_prob=1.0, train
     v_Wn = tf.matmul(vertices, Wn, name="v_Wn")  # (n_verts, filters)
     Zn = tf.divide(tf.reduce_sum(tf.gather(v_Wn, nh_indices), 1),
                    tf.maximum(nh_sizes, tf.ones_like(nh_sizes)))  # (n_verts, v_filters)
-    nonlin = nonlinearity("relu")
+    nonlin = nonlinearity("tanh")
     sig = Zn + Zc + b
     h = tf.reshape(nonlin(sig), tf.constant([-1, filters]))
     h = tf.nn.dropout(h, dropout_keep_prob)
