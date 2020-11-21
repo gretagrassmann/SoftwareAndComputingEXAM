@@ -27,7 +27,7 @@ if __name__=='__main__':
   with tf.Session() as sess:
      # set up tensorflow session
      for model_num in n:
-         saver.restore(sess, './saved_models/model_%d.ckpt' % (model_num))
+         saver.restore(sess, './Edge_saved_models/model_%d.ckpt' % (model_num))
          print(" Using model %d " % (model_num), " for testing %d proteins" % (len(test_data)))
 
      all_preds = []
@@ -65,7 +65,7 @@ if __name__=='__main__':
      print('test mean loss = ',np.mean(all_losses))
      print('test roc_auc = ',roc_auc)
 
-     with open("Testing_loss_noedge.txt","a+") as f:
+     with open("Edge_Testing_loss.txt","a+") as f:
          if model_num == 0:
              f.write('Average loss, model number, roc_auc \n')
          f.write(str(np.mean(all_losses))+','+ str(model_num)+str(roc_auc)+"\n")
