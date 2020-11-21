@@ -33,6 +33,7 @@ if __name__=='__main__':
      all_labels = []
      all_losses = []
      count = 0
+
      for prot_data in test_data:
        temp_data = copy.deepcopy(prot_data)
        n = prot_data['label'].shape[0] #no of labels for this protein molecule.
@@ -62,5 +63,10 @@ if __name__=='__main__':
      roc_auc = auc(fpr, tpr)
      print('test mean loss = ',np.mean(all_losses))
      print('test roc_auc = ',roc_auc)
+
+     with open("Testing_loss_noedge.txt","a+") as f:
+         if model_num == 0:
+             f.write('Average loss, model number, roc_auc \n')
+         f.write(str(np.mean(all_losses))+','+ str(model_num)+str(roc_auc)+"\n")
 
 print("My program took", time.time() - start_time, "to run")
