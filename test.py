@@ -7,7 +7,7 @@ import time
 start_time = time.time()
 if __name__=='__main__':
 
-  model_num = 60
+  n = [0,10,50,100,150] #The models corresponding to these number of epochs are going to be tested in a cycle
   #load the testing data
   test_data_file = os.path.join(
       'C:\\Users\\Cobal\\Desktop\\ComplexNetworksEXAM\\Graph_convolution_with_proteins-master\\data_SimpleVersion',
@@ -26,8 +26,9 @@ if __name__=='__main__':
   saver = tf.train.Saver()
   with tf.Session() as sess:
      # set up tensorflow session
-     saver.restore(sess, './saved_models/model_%d.ckpt'%(model_num))
-     print(" Using model %d "%(model_num)," for testing %d proteins"%(len(test_data)))
+     for model_num in n:
+         saver.restore(sess, './saved_models/model_%d.ckpt' % (model_num))
+         print(" Using model %d " % (model_num), " for testing %d proteins" % (len(test_data)))
 
      all_preds = []
      all_labels = []
