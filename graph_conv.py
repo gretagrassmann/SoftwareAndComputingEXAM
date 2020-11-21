@@ -113,24 +113,24 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
     layer_no = 1
     name = "left_branch_{}_{}".format("node_average", layer_no)
     with tf.name_scope(name):
-        output, params = node_average_model(input1, None, filters=256, dropout_keep_prob=0.5)
+        output, _ = node_average_model(input1, None, filters=256, dropout_keep_prob=0.5)
         input1 = output, in_edge1, in_hood_indices1
 
     name = "right_branch_{}_{}".format("node_average", layer_no)
     with tf.name_scope(name):
-        output, _ = node_average_model(input2, params, filters=256, dropout_keep_prob=0.5)
+        output, _ = node_average_model(input2, None, filters=256, dropout_keep_prob=0.5)
         input2 = output, in_edge2, in_hood_indices2
 
     # layer 2
     layer_no = 2
     name = "left_branch_{}_{}".format("node_average", layer_no)
     with tf.name_scope(name):
-        output, params = node_average_model(input1, None, filters=256, dropout_keep_prob=0.5)
+        output, _ = node_average_model(input1, None, filters=256, dropout_keep_prob=0.5)
         input1 = output, in_edge1, in_hood_indices1
 
     name = "right_branch_{}_{}".format("node_average", layer_no)
     with tf.name_scope(name):
-        output, _ = node_average_model(input2, params, filters=256, dropout_keep_prob=0.5)
+        output, _ = node_average_model(input2, None, filters=256, dropout_keep_prob=0.5)
         input2 = output, in_edge2, in_hood_indices2
 
     # merged layers
