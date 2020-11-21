@@ -17,7 +17,7 @@ ligand-residue->first convolutional layer->second convolutional layer<br />
                                                                      | <br />
                                                                       ->merge layer->first dense layer->second dense layer->prediciton <br />
                                                                      | <br />
- residue-ligand->first convolutional layer->second convolutional layer          
+ receptor-residue->first convolutional layer->second convolutional layer          
  </pre>                                                               
 
 ### train.py
