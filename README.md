@@ -4,7 +4,9 @@ These codes are based on the original work presented [here](https://github.com/p
 implementing a simple graph convolutional deep learning method. The theory and a more in-depth approach to classify a pair of amino acid residues as interacting or not are
 discussed [here](https://www.semanticscholar.org/paper/Protein-Interface-Prediction-using-Graph-Networks-Fout-Byrd/c751ab01aedc2888a7fe6e8b4f77ab1afa94072f).
 
-The following main codes were developed by [Lorenzo Spagnoli](https://github.com/LorenzoSpag) and Greta Grassmann.
+The following main codes were developed by [Lorenzo Spagnoli](https://github.com/LorenzoSpag) and Greta Grassmann. The objective of our work is improving the [original work](https://github.com/pchanda/Graph_convolution_with_proteins.git) by manipulating the original codes. 
+**avg_loss_plot.py** and **avg_loss_plot_testing.py** are used to compare the average loss for increasing number of epochs (for the training and the testing respectively) of the original model and one of our new implementation. Both codes have to be modified depending on the choosen new model, regarding the data files directories and the labeling
+of the axes.
 
 ### graph_conv.py
 The placeholder tensors for building the graph convolutional network are defined. The network is the one used 
