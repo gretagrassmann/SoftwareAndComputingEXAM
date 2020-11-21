@@ -1,7 +1,7 @@
 import os
 import pickle
 import copy
-from sklearn.metrics import roc_curve, auc,
+from sklearn.metrics import roc_curve, auc
 from graph_conv import *
 import time
 start_time = time.time()
