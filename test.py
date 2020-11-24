@@ -9,9 +9,7 @@ if __name__=='__main__':
 
   n = [0,10,50,100,150] #The models corresponding to these number of epochs are going to be tested in a cycle
   #load the testing data
-  test_data_file = os.path.join(
-      'C:\\Users\\Cobal\\Desktop\\ComplexNetworksEXAM\\Graph_convolution_with_proteins-master\\data_SimpleVersion',
-      'test.cpkl')
+  test_data_file = os.path.join('test.txt')
   test_list, test_data = pickle.load(open(test_data_file, 'rb'), encoding='latin1')
 
   in_nv_dims = test_data[0]["l_vertex"].shape[-1]
