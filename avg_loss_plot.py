@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-original = "C:\\Users\\Cobal\\Desktop\\avg_loss_train.txt"
-modified = "C:\\Users\\Cobal\\Desktop\\Sigmoidal_avg_loss_train.txt"
+original = "avg_loss_train.txt"
+modified = "Sigmoidal_avg_loss_train.txt"
 
 with open(original) as textFile:
     data = textFile.read().split()  # split based on spaces

@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-original = "C:\\Users\\Cobal\\Desktop\\Testing_loss_noedge.txt"
-modified = "C:\\Users\\Cobal\\Desktop\\Sigmoidal_Testing_loss_noedge.txt"
+original = "Testing_loss_noedge.txt"
+modified = "Sigmoidal_Testing_loss_noedge.txt"
 
 
 # Import data as a list of numbers
