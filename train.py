@@ -7,9 +7,7 @@ from graph_conv import *
 if __name__=='__main__':
 
   #load the training data
-  train_data_file = os.path.join(
-      'C:\\Users\\Cobal\\Desktop\\ComplexNetworksEXAM\\Graph_convolution_with_proteins-master\\data_SimpleVersion',
-      'train.cpkl')
+  train_data_file = os.path.join('train.txt')
   train_list, train_data = pickle.load(open(train_data_file, 'rb'), encoding='latin1')
 
   in_nv_dims = train_data[0]["l_vertex"].shape[-1]
