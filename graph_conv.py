@@ -1,5 +1,31 @@
 import tensorflow as tf
 import numpy as np
+import re
+from urllib import request
+import gzip
+import shutil
+
+num_epochs = 150
+minibatch_size = 128
+dropout_keep = 0.5
+
+
+url_train_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/train.cpkl.gz'
+url_test_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/test.cpkl.gz'
+file_name1 = re.split(pattern='/', string=url_train_data)[-1]
+file_name2 = re.split(pattern='/', string=url_test_data)[-1]
+r1 = request.urlretrieve(url=url_train_data, filename=file_name1)
+r2 = request.urlretrieve(url=url_test_data, filename=file_name2)
+txt1 = re.split(pattern=r'\.', string=file_name1)[0] + ".txt"
+txt2 = re.split(pattern=r'\.', string=file_name2)[0] + ".txt"
+
+with gzip.open(file_name1, 'rb') as f_in1:
+    with open(txt1, 'wb') as f_out1:
+        shutil.copyfileobj(f_in1, f_out1)
+
+with gzip.open(file_name2, 'rb') as f_in2:
+    with open(txt2, 'wb') as f_out2:
+        shutil.copyfileobj(f_in2, f_out2)
 
 def initializer(init, shape):
     if init == "zero":
@@ -88,10 +114,6 @@ def build_feed_dict(model_variables_list, minibatch):
         dropout_keep_prob: dropout_keep
     }
     return feed_dict
-
-num_epochs =  150
-minibatch_size = 128
-dropout_keep = 0.5
 
 
 def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
