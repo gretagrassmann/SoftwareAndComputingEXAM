@@ -36,7 +36,7 @@
       <recent name="C:\Users\Cobal\Desktop\SoftwareAndComputingEXAM" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.graph_conv">
+  <component name="RunManager" selected="Python.test">
     <configuration name="avg_loss_plot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SoftwareAndComputingEXAM" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -144,9 +144,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.graph_conv" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.train" />
+        <item itemvalue="Python.graph_conv" />
         <item itemvalue="Python.avg_loss_plot_test" />
         <item itemvalue="Python.avg_loss_plot" />
       </list>
@@ -172,22 +172,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="96" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1605982407374" />
-    <state width="1259" height="163" key="GridCell.Tab.0.bottom" timestamp="1606239262026">
+    <state width="1259" height="163" key="GridCell.Tab.0.bottom" timestamp="1606313193148">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1606239262026" />
-    <state width="1259" height="163" key="GridCell.Tab.0.center" timestamp="1606239262025">
+    <state width="1259" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1606313193148" />
+    <state width="1259" height="163" key="GridCell.Tab.0.center" timestamp="1606313193148">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1606239262025" />
-    <state width="1259" height="163" key="GridCell.Tab.0.left" timestamp="1606239262025">
+    <state width="1259" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1606313193148" />
+    <state width="1259" height="163" key="GridCell.Tab.0.left" timestamp="1606313193148">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1606239262025" />
-    <state width="1259" height="163" key="GridCell.Tab.0.right" timestamp="1606239262026">
+    <state width="1259" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1606313193148" />
+    <state width="1259" height="163" key="GridCell.Tab.0.right" timestamp="1606313193148">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1606239262026" />
+    <state width="1259" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1606313193148" />
     <state x="142" y="0" key="SettingsEditor" timestamp="1605947119892">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
