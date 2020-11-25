@@ -66,6 +66,6 @@ if __name__=='__main__':
          with open("Edge_Testing_loss.txt","a+") as f:
              if model_num == 0:
                  f.write('Average loss, model number, roc_auc \n')
-             f.write(str(np.mean(all_losses))+','+ str(model_num)+str(roc_auc)+"\n")
+             f.write(str(np.mean(all_losses))+','+ str(model_num)+','+str(roc_auc)+"\n")
 
 print("My program took", time.time() - start_time, "to run")
