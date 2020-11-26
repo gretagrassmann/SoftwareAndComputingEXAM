@@ -30,7 +30,7 @@ Finally these resulting features are passed through two regular dense layers bef
 Each protein is split into minibatches of 128 paired examples, and 256 filters are applied. These values, so as all the following constant parameters (like the number of dense layer chosen as two or the negative to positive example ratio as 1:10) were inspired by the result of a validation set performed by the authors of [this paper](https://www.semanticscholar.org/paper/Protein-Interface-Prediction-using-Graph-Networks-Fout-Byrd/c751ab01aedc2888a7fe6e8b4f77ab1afa94072f).
 
 ### Dataset
-The studied data, downloaded in our code from [here](https://github.com/pchanda/Graph_convolution_with_proteins/tree/master/data) for simplicity, but originally [here presented](https://zenodo.org/record/1127774#.X70Z7uWSk2y) are derived from protein complexes in the Docking Benchmark Dataset (DBD) version 5.0, which is the standard benchmark dataset for assessing docking and interface prediction method. These complexes are selected subsets of structures from the Protein Data Bank (PDB). The PDB is a database for the three dimensional structural data of large biological molecules, such as proteins and nucleic acids, typically obtained by X-ray crystallography, Nuclear Magnetic Resonance (NMR) spectroscopy, or increasingly cryo-electron microscopy.
+The studied data, automatically downloaded by our code from [here](https://github.com/pchanda/Graph_convolution_with_proteins/tree/master/data) for simplicity, but originally [here presented](https://zenodo.org/record/1127774#.X70Z7uWSk2y) are derived from protein complexes in the Docking Benchmark Dataset (DBD) version 5.0, which is the standard benchmark dataset for assessing docking and interface prediction method. These complexes are selected subsets of structures from the Protein Data Bank (PDB). The PDB is a database for the three dimensional structural data of large biological molecules, such as proteins and nucleic acids, typically obtained by X-ray crystallography, Nuclear Magnetic Resonance (NMR) spectroscopy, or increasingly cryo-electron microscopy.
 Because in any given complex the majority of residue pairs do not interact, the negative examples were downsized in the training dataset to obtain a 10:1 ratio of negative and positive examples. Positive examples are residue pairs that participate in the interface, negative examples are pairs that do not.
 The number of neighbors is fixed in the dataset as 20.
 
@@ -43,24 +43,50 @@ However, we analized three particular cases, each one developed inside one of th
 * The difference between an architecture in which the two "legs" of the network share the weights and one in which they do not.
 
 [avg_loss_plot.py](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/master/avg_loss_plot.py) and [avg_loss_plot_test.py](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/master/avg_loss_plot_test.py) are used to compare the average loss for increasing number of epochs (for the training and the testing respectively) of the original model and one of our new implementations. <br />
-In the following, a description of the organization of the mentioned branches of this repository. A more in depth discussion about the developed software, together with a more in depth study of the proposed problem can be found in our project report.
+In the following, a description of the organization of the mentioned branches of this repository. A more in depth discussion about the developed softwares, together with a more in depth study of the proposed problem can be found in our [project report](https://raw.github.com/gretagrassmann/SoftwareAndComputingEXAM/master/GCN.pdf) (written for the Complex Networks exam, with Prof. Remondini).
 
 
 #### Master Branch
+In this branch the original code is presented, with some slight modifications. In particular, from now on the data files will be automatically downloaded from the code, and the libraries are adapted to a more recent version of Python.
+
 ##### graph_conv.py
-The placeholder tensors for building the graph convolutional network are defined. The network is the one used 
-[here](https://github.com/pchanda/Graph_convolution_with_proteins.git): only the features of the nodes are used, the activation function of the convolutional layers is a ReLU
-and the weights are shared between the two "legs" of the network.                                            
+The placeholder tensors for building the graph convolutional network are defined. The network architecture here defined is the one already desribed in the Sections **Graph Convolutional Networks for protein-protein interaction** and **Implementation of the basic model** : only the features of the nodes are used and the "legs" share the same weights. The activation function of the convolutional layers is a ReLU. <br />
+The weights matrices are tensors of dimension *#features* × *#filters* elements (remeber that they will have to multiply the data presented in a tensor with dimension *#nodes* × *#features*). The two dense layers are defined as a square matrix *2·#filters* × *2·#filters* and another one with size *2·#filters* × *1*.  <br />
+There is also the definition of the unification of the two matrices of dimension *minibatch size* × *#filters* given as ouput by the convolutional layers in a single matrix
+of dimension the *2·minibatch size* × *2·#filters*. In this way both the ligand-receptor and receptor-ligand pairs are considered. A function which performs the final average for the classification of the outputs of the fully-connected layer for the ligand-receptor and receptor-ligand pairs is defined too.
 
 #####  train.py
-The model defined in graph_conv.py is trained on 175 pairs of proteins for the desired number of epochs. For each epoch, the average loss and the resulting parameter of the model are saved.
+The model defined in **graph_conv.py** is trained on 175 pairs of proteins for the desired number of epochs. Ligand end receptor residues are fed separately into the two ”legs” of the network’s architecture deined in **graph_conv.py**.  <br />
+For each epoch, the average loss and the resulting parameter of the model are saved.
 
 ##### test.py
 The model with the parameters corresponding to the selected numbers of epochs is tested on 55 pairs of proteins. For each model, the average loss and the area under the ROC curve are saved.
 
 ##### EdgesFeatures Branch
+To understand if the original model prediction can be improved, we have added a matrix *We* that takes into consideration the edges features, so that now the convolutional operator has this form:
+
+<img src="https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/master/images/Convolution_with_edges.PNG" alt="Drawing" width = "400" alt=""></img><br />
+
+To apply this modification we had to manipulate **graph_conv.py**. The other codes were changed only in that the name of the written are read files are adapted.
+
+#### IndependentParameters branch
+We test if the implementation of non-shared weights between the two ”legs” of the architecture leads to an improvement in the model predictions. Indeed the two ”legs” process different kind of proteins, respectively a receptor and a ligand. Since they have different functioning, it would makes sense for them to have different morphology and as a consequence for the corresponding graphs to have different weights. <br />
+As before, to apply this modification we had to manipulate **graph_conv.py**. The other codes were changed only in that the name of the written are read files are adapted.
+
+#### TransitionFunction branch
+We swap the ReLU activation function σ with a tanh function in the two convolutional layers. The ReLU activation function is still implemented in the dense layers, since the output on which we want to perform the classification has to be a positive number.
+As before, to apply this modification we had to manipulate **graph_conv.py**. The other codes were changed only in that the name of the written are read files are adapted.
 
 ### Running the experiment
+#### Requirements 
+* Python 3.7
+* numpy 1.18.1
+* tensorflow 1.14.0
+
+All the files that have to be read (like the data files **train.txt** and **test.txt**) or written (like the average loss for the training and testing results) are saved in the folder in which the codes are downloaded. <br />
+<br />
+Because of the long computational time required for both training and testing, the results for each of the four studied models are already at disposal in [Experiment_running_RESULTS](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/tree/master/Experiment_running_RESULTS). This folder contains for each model the average loss of the training for increasing number of epochs (from 1 to 149) and the average loss together with the area under the ROC curveof the testing for the models trained with 1,11,51,101 and 149 epochs.
+
 
 ## CONTACTS
 Please direct any question to:
