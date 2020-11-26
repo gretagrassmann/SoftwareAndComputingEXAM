@@ -9,7 +9,7 @@ num_epochs = 150
 minibatch_size = 128
 dropout_keep = 0.5
 
-
+#the training and testing data are downloaded and unzipped
 url_train_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/train.cpkl.gz'
 url_test_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/test.cpkl.gz'
 file_name1 = re.split(pattern='/', string=url_train_data)[-1]
@@ -27,6 +27,7 @@ with gzip.open(file_name2, 'rb') as f_in2:
     with open(txt2, 'wb') as f_out2:
         shutil.copyfileobj(f_in2, f_out2)
 
+#function to initialize the weigths' values in the convolutional and dense layers
 def initializer(init, shape):
     if init == "zero":
         return tf.zeros(shape)
@@ -35,6 +36,7 @@ def initializer(init, shape):
         std = 1 / np.sqrt(fan_in)
         return tf.random_uniform(shape, minval=-std, maxval=std)
 
+#possible activation functions
 def nonlinearity(nl):
     if nl == "relu":
         return tf.nn.relu
@@ -43,6 +45,7 @@ def nonlinearity(nl):
     elif nl == "linear" or nl == "none":
         return lambda x: x
 
+#operations performed in the convolutional layers
 def node_average_model(input, params, filters=None, dropout_keep_prob=1.0, trainable=True):
     vertices, edges, nh_indices = input
     nh_indices = tf.squeeze(nh_indices, axis=2)
@@ -57,6 +60,7 @@ def node_average_model(input, params, filters=None, dropout_keep_prob=1.0, train
         bv = tf.Variable(initializer("zero", (filters,)), name="bv", trainable=trainable)
         Wvn = tf.Variable(initializer("he", (v_shape[1].value, filters)), name="Wvn",
                           trainable=trainable)  # (v_dims, filters)
+        #this matrix considers the edges' features
         We = tf.Variable(initializer("he", (e_shape[2].value, filters)), name="We",
                          trainable=trainable)  # (e_dims, filters)
     else:
@@ -80,7 +84,7 @@ def node_average_model(input, params, filters=None, dropout_keep_prob=1.0, train
     z = tf.nn.dropout(z, dropout_keep_prob)
     return z, params
 
-
+#operations performed in the dense layers
 def dense(input, out_dims=None, dropout_keep_prob=1.0, nonlin=True, trainable=True):
     input = tf.nn.dropout(input, dropout_keep_prob)
     in_dims = input.get_shape()[-1].value
@@ -94,7 +98,7 @@ def dense(input, out_dims=None, dropout_keep_prob=1.0, nonlin=True, trainable=Tr
     Z = tf.nn.dropout(Z, dropout_keep_prob)
     return Z
 
-
+#function used to unify the output of the two "legs"
 def merge(input):
     input1, input2, examples = input
     out1 = tf.gather(input1, examples[:, 0])
@@ -103,13 +107,13 @@ def merge(input):
     output2 = tf.concat([out2, out1], axis=0)
     return tf.concat((output1, output2), axis=1)
 
-
+#the classification has to be performed on an average of the results for the ligand-receptor and receptor-ligand pairs
 def average_predictions(input):
     combined = tf.reduce_mean(tf.stack(tf.split(input, 2)), 0)
     return combined
 
 
-def build_feed_dict(model_variables_list, minibatch):
+def build_feed_dict(model_variables_list, minibatch):#<-each protein is divided in minibatches
     in_vertex1, in_edge1, in_hood_indices1, in_vertex2, in_edge2, in_hood_indices2, examples, preds, labels, dropout_keep_prob = model_variables_list
     feed_dict = {
         in_vertex1: minibatch["l_vertex"], in_edge1: minibatch["l_edge"],
@@ -124,7 +128,7 @@ def build_feed_dict(model_variables_list, minibatch):
 
 
 
-
+#definition of the architecture
 def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
     in_vertex1 = tf.placeholder(tf.float32, [None, in_nv_dims], "vertex1")
     in_vertex2 = tf.placeholder(tf.float32, [None, in_nv_dims], "vertex2")
@@ -140,7 +144,7 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
     labels = tf.placeholder(tf.float32, [None], "labels")
     dropout_keep_prob = tf.placeholder(tf.float32, shape=[], name="dropout_keep_prob")
 
-    # layer 1
+    # layer 1. Left and right branch are the two "legs"
     layer_no = 1
     name = "left_branch_{}_{}".format("node_average", layer_no)
     with tf.name_scope(name):
@@ -149,6 +153,7 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
 
     name = "right_branch_{}_{}".format("node_average", layer_no)
     with tf.name_scope(name):
+        # the weights (params) are the ones of the left_branch
         output, _ = node_average_model(input2, params, filters=256, dropout_keep_prob=0.5)
         input2 = output, in_edge2, in_hood_indices2
 
@@ -161,6 +166,7 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
 
     name = "right_branch_{}_{}".format("node_average", layer_no)
     with tf.name_scope(name):
+        # the weights (params) are the ones of the left_branch
         output, _ = node_average_model(input2, params, filters=256, dropout_keep_prob=0.5)
         input2 = output, in_edge2, in_hood_indices2
 
@@ -171,13 +177,13 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
     with tf.name_scope(name):
         input = merge(input)
 
-    # dense layer
+    #first dense layer
     layer_no = 4
     name = "{}_{}".format("dense", layer_no)
     with tf.name_scope(name):
         input = dense(input, out_dims=512, dropout_keep_prob=0.5, nonlin=True, trainable=True)
 
-    # dense layer
+    #second dense layer
     layer_no = 5
     name = "{}_{}".format("dense", layer_no)
     with tf.name_scope(name):
@@ -195,7 +201,7 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
 pn_ratio = 0.1
 learning_rate = 0.05
 
-
+#the loss is defined with the cross entropy
 def loss_op(preds, labels):
     # Loss and optimizer
     with tf.name_scope("loss"):
