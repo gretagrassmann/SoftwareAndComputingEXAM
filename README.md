@@ -1,42 +1,25 @@
 # Protein interface prediciton with Graph Convolutional Networks
 ## Software and Computing for Applied Physics exam with Prof. Giampieri, University of Bologna 
 
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href=>A typical structure of the Graph Neural Network model: the Graph Convolutional Network</a>
-   </li>
-   <li>
-      <a href=>Graph Convolutional Networks for protein-protein interaction</a>
-   </li>
-   <li>
-      <a href=>Implementation of the basic model</a>
-   </li>
-   <li>
-      <a href="#dataset">Dataset</a>
-   </li>
-   <li>
-      <a href=>Strucuture of our project</a>
-       <ul>
-        <li><a href=>Master branch</a></li>
-      </ul>
-        <ul>
-        <li><a href=>EdgesFeatures branch</a></li>
-      </ul>
-        <ul>
-        <li><a href=>IndependentParameters branch</a></li>
-      </ul>
-      <ul>
-        <li><a href=>TransitionFunction branch</a></li>
-      </ul>
-   </li>
-   <li>
-      <a href=>Running the experiment</a>
-   </li>
-  </ol>
-</details>
+### Table of contents:
+  * [A typical structure of the Graph Neural Network model: the Graph Convolutional Network](#a-typical-structure-of-the-graph-neural-network-model-the-graph-convolutional-network)
+  * [Graph Convolutional Networks for protein-protein interaction](#graph-convolutional-networks-for-protein-protein-interaction)
+  * [Implementation of the basic model](#implementation-of-the-basic-model)
+  * [Dataset](#dataset)
+  * [Strucuture of our project](#strucuture-of-our-project)
+    + [Master Branch](#master-branch)
+      - [graph_conv.py](#graph_convpy)
+      - [train.py](#trainpy)
+      - [test.py](#testpy)
+    + [EdgesFeatures Branch](#edgesfeatures-branch)
+    + [IndependentParameters branch](#independentparameters-branch)
+    + [TransitionFunction branch](#transitionfunction-branch)
+  * [Running the experiment](#running-the-experiment)
+    + [Requirements](#requirements)
+- [CONTACTS](#contacts)
+
+
+
 
 ### A typical structure of the Graph Neural Network model: the Graph Convolutional Network
 The Graph Neural Network (**GNN**) is a connectionist neural network model which has gained increasing popularity in various domains related to graph analysis, since many underlying relationships among data in several areas of science can be naturally represented in terms of graph structures. Its success is due to its power in modeling the dependencies between nodes in a graph by capturing the messages passing between them. In a simplified approach each node of the graph is described by a set of features, and the network uses the features from each node and its neighbouring ones to infer a state embedding which contains the information of the neighborhood of each node. In the more complete original approach this information propagation between nodes is guided by the edges.<br /> 
@@ -99,7 +82,7 @@ For each epoch, the average loss and the resulting parameter of the model are sa
 ##### test.py
 The model with the parameters corresponding to the selected numbers of epochs is tested on 55 pairs of proteins. For each model, the average loss and the area under the ROC curve are saved.
 
-##### EdgesFeatures Branch
+#### EdgesFeatures Branch
 To understand if the original model prediction can be improved, we have added a matrix *We* that takes into consideration the edges features, so that now the convolutional operator has this form:
 
 <img src="https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/master/images/Convolution_with_edges.PNG" alt="Drawing" width = "400" alt=""></img><br />
@@ -127,7 +110,7 @@ Otherwise, for each branch the procedure to follow is the same:
 2. Run **train.py**, which takes the data in **train.txt** and train the selected model for the desired number of epochs. For each number of epochs the average loss and the model's parameters are saved.
 3. Run **test.py**, which takes the models correponding to the ones trained for a number of epochs selected in ***n=[]*** and tests them on the data in **test.txt**. The average loss and the area under the ROC curve for each one of them are saved.
 
-The classification precision of two models can then be compared with **avg_loss_plot.py** and  **avg_loss_plot_test.py*.
+The classification precision of two models can then be compared with **avg_loss_plot.py** and  **avg_loss_plot_test.py**.
 
 
 
