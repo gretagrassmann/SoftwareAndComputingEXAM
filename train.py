@@ -1,8 +1,8 @@
 """
 The documentation about the functions build_graph_conv_model, loss_op and build_feed_dict
-can be found at https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/master/graph_conv.py.
+can be found at https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/IndependentParameters/graph_conv.py
 A more in depth explanation of the theory behind this model can be found at
-https://raw.github.com/gretagrassmann/SoftwareAndComputingEXAM/master/GCN.pdf.
+https://raw.github.com/gretagrassmann/SoftwareAndComputingEXAM/master/GCN.pdf
 """
 import os
 import pickle
