@@ -63,6 +63,7 @@ However, we analyzed three particular cases, each one developed inside one of th
 * The difference between an architecture in which the two "legs" of the network share the weights and one in which they do not.
 
 **avg_loss_plot.py** and **avg_loss_plot_test.py** are used to compare the average loss for increasing number of epochs (for the training and the testing respectively) of the original model and one of our new implementations. <br />
+**testing.py**, which appears with small modifications in all branches, contains the testing of the functions defined in the corresponding version of **graph_conv.py**.<br/>
 In the following, a description of the organization of the mentioned branches of this repository is given. A more in depth discussion about the developed software, together with a more in depth study of the proposed problem can be found in our [project report](https://raw.github.com/gretagrassmann/SoftwareAndComputingEXAM/master/GCN.pdf) (written for the Complex Networks exam, with Prof. Remondini).
 
 
