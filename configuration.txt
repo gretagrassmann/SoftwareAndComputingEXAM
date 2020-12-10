@@ -1,0 +1,12 @@
+number_of_epochs = 150
+number_of_residues_couples_for_minibatch = 128
+results_dropout_probability = 0.5
+number_filters = 256
+
+number_of_convolutional_layers = 2
+
+convolutional_layers_activation_function  = "ReLU_function"
+
+relation_between_convolutional_branches_weights  = "shared"
+
+edges_features = "no"
