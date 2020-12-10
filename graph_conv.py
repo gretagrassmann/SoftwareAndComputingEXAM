@@ -15,24 +15,6 @@ num_epochs = 150
 minibatch_size = 128
 dropout_keep = 0.5
 
-# The training and testing data are downloaded and unzipped
-url_train_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/train.cpkl.gz'
-url_test_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/test.cpkl.gz'
-file_name1 = re.split(pattern='/', string=url_train_data)[-1]
-file_name2 = re.split(pattern='/', string=url_test_data)[-1]
-r1 = request.urlretrieve(url=url_train_data, filename=file_name1)
-r2 = request.urlretrieve(url=url_test_data, filename=file_name2)
-txt1 = re.split(pattern=r'\.', string=file_name1)[0] + ".txt"
-txt2 = re.split(pattern=r'\.', string=file_name2)[0] + ".txt"
-
-with gzip.open(file_name1, 'rb') as f_in1:
-    with open(txt1, 'wb') as f_out1:
-        shutil.copyfileobj(f_in1, f_out1)
-
-with gzip.open(file_name2, 'rb') as f_in2:
-    with open(txt2, 'wb') as f_out2:
-        shutil.copyfileobj(f_in2, f_out2)
-
 def initializer(init, shape):
     """This function initializes the weights' values in the convolutional and dense layers, so as the vector of biases
        b.
@@ -346,7 +328,7 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
 
     return [in_vertex1, in_edge1, in_hood_indices1, in_vertex2, in_edge2, in_hood_indices2, examples, preds, labels,
             dropout_keep_prob]
-
+# Positive and negative examples ratio
 pn_ratio = 0.1
 # Parameter that determines the step size at each iteration while moving toward the minimum of the loss function.
 learning_rate = 0.05
@@ -361,8 +343,11 @@ def loss_op(preds, labels):
                          loss : cross entropy loss, determined by the difference between preds and labels."""
 
     with tf.name_scope("loss"):
+        # Weights vector: negative examples are less relevant than the positive ones
         scale_vector = (pn_ratio * (labels - 1) / -2) + ((labels + 1) / 2)
         logits = tf.concat([-preds, preds], axis=1)
+        # First column: negative labels are now positive and positive labels are zeroed
+        # Second column: positive labels are preserved and negative labels are zeroed
         labels_stacked = tf.stack([(labels - 1) / -2, (labels + 1) / 2], axis=1)
         loss = tf.losses.softmax_cross_entropy(labels_stacked, logits, weights=scale_vector)
         return loss
