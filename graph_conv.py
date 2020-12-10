@@ -9,12 +9,18 @@ from urllib import request
 import gzip
 import shutil
 
-# The model will be trained for a #epochs between 1 and num_epochs
-num_epochs = 150
-# Number of paired examples in which the protein is divided
-minibatch_size = 128
-dropout_keep = 0.5
+with open('configuration.txt') as f:
+    for line in f:
+        exec(line)
 
+num_epochs = number_of_epochs
+minibatch_size = number_of_residues_couples_for_minibatch
+dropout_keep = results_dropout_probability
+num_conv_layers = number_of_convolutional_layers
+activation = convolutional_layers_activation_function
+branch_rel = relation_between_convolutional_branches_weights
+edge_feat = edges_features
+n_filters = number_filters
 
 def initializer(init, shape):
     """This function initializes the weights' values in the convolutional and dense layers, so as the vector of biases
@@ -86,6 +92,7 @@ def node_average_model(input, params, filters=None, dropout_keep_prob=1.0, train
     nh_indices = tf.squeeze(nh_indices, axis=2)
     # vertices has shape [#nodes,#features]
     v_shape = vertices.get_shape()
+    e_shape = edges.get_shape()
     # For fixed number of neighbors, -1 is a pad value
     nh_sizes = tf.expand_dims(tf.count_nonzero(nh_indices + 1, axis=1, dtype=tf.float32),
                               -1)
@@ -99,23 +106,45 @@ def node_average_model(input, params, filters=None, dropout_keep_prob=1.0, train
                          trainable=trainable)
         # b is the vector of bias. It has dimension [#filters]
         b = tf.Variable(initializer("zero", (filters,)), name="b", trainable=trainable)
+        if edge_feat == "yes":
+            # This matrix considers the edges' features
+            We = tf.Variable(initializer("he", (e_shape[2].value, filters)), name="We",
+                         trainable=trainable)
     else:
         # Takes as weights and vector of bias the ones resulting from the preceding cycle
         Wn, Wc = params["Wn"], params["Wc"]
         filters = Wc.get_shape()[-1].value
         b = params["b"]
-    params = {"Wn": Wn, "Wc": Wc, "b": b}
+        if edge_feat == "yes":
+            # This matrix considers the edges' features
+            We = params["We"]
+    if edge_feat == "no":
+        params = {"Wn": Wn, "Wc": Wc, "b": b}
+    else:
+        params = {"Wn": Wn,"We":We, "Wc": Wc, "b": b}
+
     # Generates center node signals
     Zc = tf.matmul(vertices, Wc, name="Zc")  # [#vertices,#filters]
     # Creates neighbors signals
     v_Wn = tf.matmul(vertices, Wn, name="v_Wn")  # [#vertices,#filters]
+    if edge_feat == "yes":
+        e_We = tf.tensordot(edges,We,axes=[[2],[0]], name="e_We") # [#vertices,#neighbors,#filters]
     # tf.gather reorders the neighbors signals according to their position in the neighborhood.
     # Zn is a tensor of shape [#vertices,#filters] with the normalized sum, for each vertex and each filter, of that
     # neighborhood's vertices signals
-    Zn = tf.divide(tf.reduce_sum(tf.gather(v_Wn, nh_indices), 1),
+    if edge_feat == "no":
+        Zn = tf.divide(tf.reduce_sum(tf.gather(v_Wn, nh_indices), 1),
+                   tf.maximum(nh_sizes, tf.ones_like(nh_sizes)))
+    else:
+        Zn = tf.divide(tf.reduce_sum(tf.gather(v_Wn, nh_indices), 1)+tf.reduce_sum(e_We,1),
                    tf.maximum(nh_sizes, tf.ones_like(nh_sizes)))
     # Activation function
-    nonlin = nonlinearity("relu")
+    if activation == "ReLU_function":
+        nonlin = nonlinearity("relu")
+    elif activation == "tanh_function":
+        nonlin = nonlinearity("tanh")
+    else:
+        nonlin = nonlinearity("linear")
     # Sum of the signals from the center node itself and its neighbors, plus the vector of bias
     sig = Zn + Zc + b
     # To each node a value is associated for each one of the applied filters
@@ -288,53 +317,51 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
     labels = tf.placeholder(tf.float32, [None], "labels")
     dropout_keep_prob = tf.placeholder(tf.float32, shape=[], name="dropout_keep_prob")
 
-    layer_no = 1
-    # First convolutional layer of the left branch
-    name = "left_branch_{}_{}".format("node_average", layer_no)
-    with tf.name_scope(name):
-        output, params = node_average_model(input1, None, filters=256, dropout_keep_prob=0.5)
-        input1 = output, in_edge1, in_hood_indices1
 
-    # Firs convolutional layer of the right branch
-    name = "right_branch_{}_{}".format("node_average", layer_no)
-    with tf.name_scope(name):
-        output, _ = node_average_model(input2, params, filters=256, dropout_keep_prob=0.5) #the weights (params) are the one of the left_branc
-        input2 = output, in_edge2, in_hood_indices2
 
-    layer_no = 2
-    # Second convolutional layer of the left branch
-    name = "left_branch_{}_{}".format("node_average", layer_no)
-    with tf.name_scope(name):
-        output, params = node_average_model(input1, None, filters=256, dropout_keep_prob=0.5)
-        input1 = output, in_edge1, in_hood_indices1
 
-    # Second convolutional layer of the right branch
-    name = "right_branch_{}_{}".format("node_average", layer_no)
-    with tf.name_scope(name):
-        output, _ = node_average_model(input2, params, filters=256, dropout_keep_prob=0.5)#the weights (params) are the one of the
-        input2 = output, in_edge2, in_hood_indices2
+    for i in range(1,num_conv_layers+1):
+        layer_no = i
+        # i-th convolutional layer of the left branch
+        name = "left_branch_{}_{}".format("node_average", layer_no)
+        with tf.name_scope(name):
+            output, params = node_average_model(input1, None, filters=n_filters, dropout_keep_prob=0.5)
+            input1 = output, in_edge1, in_hood_indices1
+
+        # i-th convolutional layer of the right branch
+        name = "right_branch_{}_{}".format("node_average", layer_no)
+        with tf.name_scope(name):
+            if branch_rel == "shared":
+                # The weights (params) are the one of the left branch
+                output, _ = node_average_model(input2, params, filters=n_filters, dropout_keep_prob=0.5)
+            else:
+                # This second branch has some new weights, independent from the left ones
+                output, _ = node_average_model(input2, None, filters=n_filters, dropout_keep_prob=0.5)
+
+            input2 = output, in_edge2, in_hood_indices2
+
 
     # The output of the two branches are merged
-    layer_no = 3
+    layer_no = num_conv_layers+1
     name = "{}_{}".format("merge", layer_no)
     input = input1[0], input2[0], examples
     with tf.name_scope(name):
         input = merge(input)
 
     # First dense layer
-    layer_no = 4
+    layer_no = num_conv_layers+2
     name = "{}_{}".format("dense", layer_no)
     with tf.name_scope(name):
         input = dense(input, out_dims=512, dropout_keep_prob=0.5, nonlin=True, trainable=True)
 
     # Second dense layer
-    layer_no = 5
+    layer_no = num_conv_layers+3
     name = "{}_{}".format("dense", layer_no)
     with tf.name_scope(name):
         input = dense(input, out_dims=1, dropout_keep_prob=0.5, nonlin=False, trainable=True)
 
     # Average layer
-    layer_no = 6
+    layer_no = num_conv_layers+4
     name = "{}_{}".format("average_predictions", layer_no)
     with tf.name_scope(name):
         preds = average_predictions(input)
