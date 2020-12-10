@@ -99,7 +99,7 @@ if __name__=='__main__':
          print('test roc_auc = ',roc_auc)
 
          # The mean loss and the area under the ROC curve for each tested model are saved
-         with open("Testing_loss_noedge.txt","a+") as f:
+         with open("Testing_loss.txt","a+") as f:
              if model_num == 0:
                  f.write('Average loss, model number, roc_auc \n')
              f.write(str(np.mean(all_losses))+','+ str(model_num)+','+str(roc_auc)+"\n")
