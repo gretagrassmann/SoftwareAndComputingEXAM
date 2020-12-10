@@ -62,13 +62,15 @@ def nonlinearity(nl):
 
 def node_average_model(input, params, filters=None, dropout_keep_prob=1.0, trainable=True):
     """This function defines the operations performed in the convolutional layers: starting from some initial values for
-       the weights and the features of the nodes, they multiply them. In particular, there are two weights
-       tensors, one that multiplies the center node features (Wc) and one that multiplies the neighbors features (Wn), and
-       a vector of bias (b). The objective of the convolution is to aggregate the information from the neighborhood of
-       a node to model the dependencies between the nodes belonging to a graph (in this case the amino acid forming a
-       protein): it infers a state embedding which contains the information of the neighborhood of each node. A number
-       of filters must be specified for the convolution: the filters are what actually detects specific patterns. At the
-       ond to each element a value for each applied filter is associated.
+       the weights and the features of the nodes, they multiply them. In particular, when the edges' features are not
+       considered there are two weights tensors, one that multiplies the center node features (Wc) and one that 
+       multiplies the neighbors features (Wn), and a vector of bias (b). When instead the edges' features are considered
+       a third weight tensor (We) that multiplies them is considered. The objective of the convolution is to aggregate 
+       the information from the neighborhood of a node to model the dependencies between the nodes belonging to 
+       a graph (in this case the amino acid forming a protein): it infers a state embedding which contains the 
+       information of the neighborhood of each node. A number of filters must be specified for the convolution: the 
+       filters are what actually detects specific patterns. At the end to each element a value for each applied filter
+       is associated.
        A more in depth description of the following operations is given at
        https://raw.github.com/gretagrassmann/SoftwareAndComputingEXAM/master/GCN.pdf. 
 
@@ -272,7 +274,7 @@ def build_feed_dict(model_variables_list, minibatch):
 
 def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
     """This function defines how the variable resulting from the architecture of the model are produced. The architecture
-       is composed by the two "legs" (left, or 1, and right, or 2) of two convolutional layers (the left one for the ligand
+       is composed by the two "legs" (left, or 1, and right, or 2) of two or more convolutional layers (the left one for the ligand
        and the right one for the receptor proteins), the merging of their two outputs in a single tensor, which
        is then fed into two dense layers. The final dense layers associate to each pair's combination a single value.
        This tensor is than averaged, so that the resulting tensor has half of its dimension. At the end, to each pair of
