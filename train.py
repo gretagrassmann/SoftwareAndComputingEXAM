@@ -11,6 +11,20 @@ from sklearn.metrics import roc_curve, auc
 from graph_conv import *
 
 if __name__=='__main__':
+  """
+      The following lines can be deleted if another set of data is used:
+                  DBD DATA BEGINNING
+  """
+  # The training data are downloaded and unzipped
+  url_train_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/train.cpkl.gz'
+  file_name1 = re.split(pattern='/', string=url_train_data)[-1]
+  r1 = request.urlretrieve(url=url_train_data, filename=file_name1)
+  txt1 = re.split(pattern=r'\.', string=file_name1)[0] + ".txt"
+
+  with gzip.open(file_name1, 'rb') as f_in1:
+      with open(txt1, 'wb') as f_out1:
+          shutil.copyfileobj(f_in1, f_out1)
+  """             DBD DATA ENDING            """
 
   # Load the training data
   train_data_file = os.path.join('train.txt')
