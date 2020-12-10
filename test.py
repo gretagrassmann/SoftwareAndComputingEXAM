@@ -12,6 +12,20 @@ from graph_conv import *
 import time
 start_time = time.time()
 if __name__=='__main__':
+  """
+  The following lines can be deleted if another set of data is used:
+              DBD DATA BEGINNING
+  """
+  # The testing data are downloaded and unzipped
+  url_test_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/test.cpkl.gz'
+  file_name2 = re.split(pattern='/', string=url_test_data)[-1]
+  r2 = request.urlretrieve(url=url_test_data, filename=file_name2)
+  txt2 = re.split(pattern=r'\.', string=file_name2)[0] + ".txt"
+
+  with gzip.open(file_name2, 'rb') as f_in2:
+      with open(txt2, 'wb') as f_out2:
+          shutil.copyfileobj(f_in2, f_out2)
+  """             DBD DATA ENDING            """
 
   # The models corresponding to these number of epochs are going to be tested in a cycle
   n = [0,10,50,100,149]
