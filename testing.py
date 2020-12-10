@@ -8,6 +8,13 @@ from hypothesis import given
 from hypothesis import assume
 import tensorflow as tf
 
+# To know if the considered model takes into account the edges features, so that the matrix
+# We has to be checked too
+with open('configuration.txt') as f:
+    for line in f:
+        exec(line)
+edge_feat = edges_features
+
 # Changes a tensor in a numpy array: handy when looking at the single elements
 tf.enable_eager_execution()
 def tensor_to_array(tensor1):
@@ -47,8 +54,9 @@ def test_node_average_model(minibatch_size,n_vertex_features,n_edge_features,n_n
     """
             Tests:
             -If the weights tensors (the weights Wc and Wn in the convolutional layers, referred to the features of the
-             center nodes and of their neighbors, and the vector of bias again in the convolutional layers)
-             have the right shapes. In particular the case in which node_average_model receive as input params=None is
+             center nodes and of their neighbors, possibly the one referred to to edges' features We, and the vector
+             of bias again in the convolutional layers) have the right shapes.
+             In particular the case in which node_average_model receive as input params=None is
              analyzed, since otherwise the params tensor (of which the right shape is here tested) is simply decomposed.
             -If the tensor with the new values associated for each filter to each node, resulting from the convolution,
              has the right shape.
@@ -68,6 +76,8 @@ def test_node_average_model(minibatch_size,n_vertex_features,n_edge_features,n_n
     assert params["Wn"].get_shape() == params["Wc"].get_shape() == (n_vertex_features, n_filters)
     assert params["b"].get_shape() == n_filters
     assert output.get_shape() == (minibatch_size, n_filters)
+    if edge_feat == "yes":
+        assert params["We"].get_shape() == (n_edge_features,n_filters)
     
 
 ################################ TEST FOR DENSE
