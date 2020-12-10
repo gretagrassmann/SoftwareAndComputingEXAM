@@ -342,7 +342,7 @@ def build_graph_conv_model(in_nv_dims, in_ne_dims, in_nhood_size):
 
     return [in_vertex1, in_edge1, in_hood_indices1, in_vertex2, in_edge2, in_hood_indices2, examples, preds, labels,
             dropout_keep_prob]
-
+# Positive and negative examples ratio
 pn_ratio = 0.1
 # Parameter that determines the step size at each iteration while moving toward the minimum of the loss function.
 learning_rate = 0.05
@@ -356,8 +356,11 @@ def loss_op(preds, labels):
                   Returns:
                       loss : cross entropy loss, determined by the difference between preds and labels."""
     with tf.name_scope("loss"):
+        # Weights vector: negative examples are less relevant than the positive ones
         scale_vector = (pn_ratio * (labels - 1) / -2) + ((labels + 1) / 2)
         logits = tf.concat([-preds, preds], axis=1)
+        # First column: negative labels have now positive values and positive labels are zeroed
+        # Second column: positive labels are preserved and negative labels are zeroed
         labels_stacked = tf.stack([(labels - 1) / -2, (labels + 1) / 2], axis=1)
         loss = tf.losses.softmax_cross_entropy(labels_stacked, logits, weights=scale_vector)
         return loss
