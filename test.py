@@ -12,6 +12,9 @@ from graph_conv import *
 import time
 start_time = time.time()
 if __name__=='__main__':
+  with open('configuration.txt') as f:
+      for line in f:
+          exec(line)
   """
   The following lines can be deleted if another set of data is used:
               DBD DATA BEGINNING
@@ -28,7 +31,7 @@ if __name__=='__main__':
   """             DBD DATA ENDING            """
 
   # The models corresponding to these number of epochs are going to be tested in a cycle
-  n = [0,10,50,100,149]
+  n = selected_models_for_testing
   # Load the testing data
   test_data_file = os.path.join('test.txt')
   test_list, test_data = pickle.load(open(test_data_file, 'rb'), encoding='latin1')
