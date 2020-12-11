@@ -25,11 +25,11 @@ if __name__=='__main__':
   with gzip.open(file_name1, 'rb') as f_in1:
       with open(txt1, 'wb') as f_out1:
           shutil.copyfileobj(f_in1, f_out1)
-  """             DBD DATA ENDING            """
 
   # Load the training data
   train_data_file = os.path.join('train.txt')
   train_list, train_data = pickle.load(open(train_data_file, 'rb'), encoding='latin1')
+  """             DBD DATA ENDING            """
 
   # Number of features of a vertex
   in_nv_dims = train_data[0]["l_vertex"].shape[-1]
