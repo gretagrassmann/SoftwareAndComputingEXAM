@@ -12,24 +12,34 @@ from sklearn.metrics import roc_curve, auc
 from graph_conv import *
 
 if __name__=='__main__':
+  if __name__ == '__main__':
+      with open('configuration.txt') as f:
+          for line in f:
+              exec(line)
+
+  data = type_of_data
   """
       The following lines can be deleted if another set of data is used:
                   DBD DATA BEGINNING
   """
-  # The training data are downloaded and unzipped
-  url_train_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/train.cpkl.gz'
-  file_name1 = re.split(pattern='/', string=url_train_data)[-1]
-  r1 = request.urlretrieve(url=url_train_data, filename=file_name1)
-  txt1 = re.split(pattern=r'\.', string=file_name1)[0] + ".txt"
+  if data == "DBD":
+      # The training data are downloaded and unzipped
+      url_train_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/train.cpkl.gz'
+      file_name1 = re.split(pattern='/', string=url_train_data)[-1]
+      r1 = request.urlretrieve(url=url_train_data, filename=file_name1)
+      txt1 = re.split(pattern=r'\.', string=file_name1)[0] + ".txt"
 
-  with gzip.open(file_name1, 'rb') as f_in1:
-      with open(txt1, 'wb') as f_out1:
-          shutil.copyfileobj(f_in1, f_out1)
-  """             DBD DATA ENDING            """
+      with gzip.open(file_name1, 'rb') as f_in1:
+          with open(txt1, 'wb') as f_out1:
+              shutil.copyfileobj(f_in1, f_out1)
 
-  # Load the training data
-  train_data_file = os.path.join('train.txt')
-  train_list, train_data = pickle.load(open(train_data_file, 'rb'), encoding='latin1')
+      # Load the training data
+      train_data_file = os.path.join('train.txt')
+      train_list, train_data = pickle.load(open(train_data_file, 'rb'), encoding='latin1')
+      """             DBD DATA ENDING            """
+  else:
+      train_data = 'YOUR_TRAINING_DATA_FILE'
+
 
   # Number of features of a vertex
   in_nv_dims = train_data[0]["l_vertex"].shape[-1]
