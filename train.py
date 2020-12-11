@@ -17,7 +17,7 @@ if __name__=='__main__':
           for line in f:
               exec(line)
 
-  data = type_of_data
+  data = type_of_train_data
   """
       The following lines can be deleted if another set of data is used:
                   DBD DATA BEGINNING
@@ -38,7 +38,8 @@ if __name__=='__main__':
       train_list, train_data = pickle.load(open(train_data_file, 'rb'), encoding='latin1')
       """             DBD DATA ENDING            """
   else:
-      train_data = 'YOUR_TRAINING_DATA_FILE'
+      train_data_file = os.path.join(data)
+      train_data = pickle.load(open(train_data_file,'rb'))
 
 
   # Number of features of a vertex
