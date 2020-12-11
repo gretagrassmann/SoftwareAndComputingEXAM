@@ -25,15 +25,14 @@ if __name__=='__main__':
   with gzip.open(file_name2, 'rb') as f_in2:
       with open(txt2, 'wb') as f_out2:
           shutil.copyfileobj(f_in2, f_out2)
-  """             DBD DATA ENDING            """
-
-
-  # The models corresponding to these number of epochs are going to be tested in a cycle
-  n = [0,10,50,100,149]
+  
   # Load the testing data
   test_data_file = os.path.join('test.txt')
   test_list, test_data = pickle.load(open(test_data_file, 'rb'), encoding='latin1')
+  """             DBD DATA ENDING            """
 
+  # The models corresponding to these number of epochs are going to be tested in a cycle
+  n = [0, 10, 50, 100, 149]
   # Number of features of a vertex
   in_nv_dims = test_data[0]["l_vertex"].shape[-1]
   # Number of features of an edge
