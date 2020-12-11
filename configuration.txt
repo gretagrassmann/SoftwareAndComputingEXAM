@@ -12,4 +12,5 @@ relation_between_convolutional_branches_weights  = "shared"
 
 edges_features = "no"
 
-type_of_data = "DBD"
+type_of_train_data = "DBD"
+type_of_test_data = "DBD"
