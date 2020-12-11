@@ -16,7 +16,7 @@ if __name__=='__main__':
       for line in f:
           exec(line)
 
-  data = type_of_data
+  data = type_of_test_data
   """
   The following lines can be deleted if another set of data is used:
               DBD DATA BEGINNING
@@ -37,8 +37,8 @@ if __name__=='__main__':
       test_list, test_data = pickle.load(open(test_data_file, 'rb'), encoding='latin1')
       """             DBD DATA ENDING            """
   else:
-      test_data = 'YOUR_TRAINING_DATA_FILE'
-
+      test_data_file = os.path.join(data)
+      test_data = pickle.load(open(test_data_file, 'rb'))
   # The models corresponding to these number of epochs are going to be tested in a cycle
   n = selected_models_for_testing
 
