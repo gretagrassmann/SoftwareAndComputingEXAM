@@ -15,26 +15,32 @@ if __name__=='__main__':
   with open('configuration.txt') as f:
       for line in f:
           exec(line)
+
+  data = type_of_data
   """
   The following lines can be deleted if another set of data is used:
               DBD DATA BEGINNING
   """
-  # The testing data are downloaded and unzipped
-  url_test_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/test.cpkl.gz'
-  file_name2 = re.split(pattern='/', string=url_test_data)[-1]
-  r2 = request.urlretrieve(url=url_test_data, filename=file_name2)
-  txt2 = re.split(pattern=r'\.', string=file_name2)[0] + ".txt"
+  if data == "DBD":
+      # The testing data are downloaded and unzipped
+      url_test_data = 'https://raw.github.com/pchanda/Graph_convolution_with_proteins/master/data/test.cpkl.gz'
+      file_name2 = re.split(pattern='/', string=url_test_data)[-1]
+      r2 = request.urlretrieve(url=url_test_data, filename=file_name2)
+      txt2 = re.split(pattern=r'\.', string=file_name2)[0] + ".txt"
 
-  with gzip.open(file_name2, 'rb') as f_in2:
-      with open(txt2, 'wb') as f_out2:
-          shutil.copyfileobj(f_in2, f_out2)
-  """             DBD DATA ENDING            """
+      with gzip.open(file_name2, 'rb') as f_in2:
+          with open(txt2, 'wb') as f_out2:
+              shutil.copyfileobj(f_in2, f_out2)
+
+      # Load the testing data
+      test_data_file = os.path.join('test.txt')
+      test_list, test_data = pickle.load(open(test_data_file, 'rb'), encoding='latin1')
+      """             DBD DATA ENDING            """
+  else:
+      test_data = 'YOUR_TRAINING_DATA_FILE'
 
   # The models corresponding to these number of epochs are going to be tested in a cycle
   n = selected_models_for_testing
-  # Load the testing data
-  test_data_file = os.path.join('test.txt')
-  test_list, test_data = pickle.load(open(test_data_file, 'rb'), encoding='latin1')
 
   # Number of features of a vertex
   in_nv_dims = test_data[0]["l_vertex"].shape[-1]
