@@ -12,6 +12,8 @@ To allow the user to explore more easily different configurations of the model's
 * ***convolutional_layers_activation_function***: defines the activation function of the convolutional layers. With ***"ReLU_function"*** a ReLU activation function is selected, while with ***"tanh_function"*** a hyperbolic function is used for the activation. Otherwise the activation is given by a linear function.
 * ***relation_between_convolutional_branches_weights***: determines if the two branches of the convolutional part of the architecture (one for the ligand and one for the receptor residues) share the same weights. This is the case when ***"shared"*** is selected, otherwise the two branches will have different weights.
 * ***edges_features***: determines if the edges' features are considered in the convolution operation. Only two insertion are accepted: with ***"yes"*** the edges are taken into account with a new weight matrix ***We***, instead with ***"no"*** they are not considered.
+* ***type_of_train_data***: with ***"DBD"*** the data from the Docking Benchmark Dataset (DBD) are used, otherwise the user has to specify the new data file by inserting its path. The type of data that can be used are [here](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/tree/master#dataset) specified.
+* ***type_of_test_data***: with ***"DBD"*** the data from the Docking Benchmark Dataset (DBD) are used, otherwise the user has to specify the new data file by inserting its path. The type of data that can be used are [here](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/tree/master#dataset) specified.
 
 
 
