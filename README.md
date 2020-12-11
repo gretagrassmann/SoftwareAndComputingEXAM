@@ -123,7 +123,7 @@ The classification precision of two models can then be compared with **avg_loss_
 * Python 3.7
 * numpy 1.18.1
 * tensorflow 1.14.0
-* The accepted data files (both for training and testing) are [here](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/tree/Customizable#dataset) described.
+* The accepted data files (both for training and testing) are [here](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/tree/Customizable) described.
 
 #### Customizable branch
 The codes in the **master branch** have been slightly modified to allow each user to perform his/her independent experiment, by configuring all the parameters and architecture's characteristic of the model possibly in new combination that have not been tested yet in [our project](https://raw.github.com/gretagrassmann/SoftwareAndComputingEXAM/master/GCN.pdf). The type of studied data can be changed too. </br>
