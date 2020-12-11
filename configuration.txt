@@ -11,3 +11,5 @@ convolutional_layers_activation_function  = "ReLU_function"
 relation_between_convolutional_branches_weights  = "shared"
 
 edges_features = "no"
+
+type_of_data = "DBD"
