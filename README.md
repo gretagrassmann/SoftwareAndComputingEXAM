@@ -14,8 +14,12 @@
     + [EdgesFeatures Branch](#edgesfeatures-branch)
     + [IndependentParameters branch](#independentparameters-branch)
     + [TransitionFunction branch](#transitionfunction-branch)
-  * [Running the experiment](#running-the-experiment)
+  * [Running our experiment](#running-our-experiment)
     + [Requirements](#requirements)
+  * [Customizable implementation](#customizable-implementation)  
+    + [Requirements](#requirements)
+    + [Customizable branch](#customizable-branch)
+    + [Running your experiment](#running-your-experiment)
 - [CONTACTS](#contacts)
 
 
@@ -98,7 +102,7 @@ As before, to apply this modification we had to manipulate **graph_conv.py**. Th
 We swap the ReLU activation function σ with a tanh function in the two convolutional layers. The ReLU activation function is still implemented in the dense layers, since the output on which we want to perform the classification has to be a positive number.
 As before, to apply this modification we had to manipulate **graph_conv.py**. The other codes were changed only in that the name of the written and read files are adapted.
 
-### Running the experiment
+### Running our experiment
 #### Requirements 
 * Python 3.7
 * numpy 1.18.1
@@ -107,15 +111,43 @@ As before, to apply this modification we had to manipulate **graph_conv.py**. Th
 All the files that have to be read (like the data files **train.txt** and **test.txt**) or written (like the average loss for the training and testing results) are saved in the folder where the codes are downloaded. <br />
 Because of the long computational time required for both training and testing, the results for each of the four studied models are already at disposal in [Experiment_running_RESULTS](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/tree/master/Experiment_running_RESULTS). This folder contains, for each model, the average loss of the training for increasing number of epochs (from 1 to 149) and the average loss together with the area under the ROC curve of the testing for the models trained with 1,11,51,101 and 149 epochs.<br />
 Otherwise, for each branch the procedure to follow is the same:
-1. Run **graph_conv.py**, which defines the model that is going to be implemented and downloads the test and train data. If desired, the number of epochs (***num_epochs***) can be changed. 
+1. Run **graph_conv.py**, which defines the model that is going to be implemented. If desired, the number of epochs (***num_epochs***) can be changed. 
 2. Run **train.py**, which takes the data in **train.txt** and trains the selected model for the desired number of epochs. For each number of epochs the average loss and the model's parameters are saved.
 3. Run **test.py**, which takes the models corresponding to the ones trained for a number of epochs selected in ***n=[]*** and tests them on the data in **test.txt**. The average loss and the area under the ROC curve for each one of them are saved.
 
 The classification precision of two models can then be compared with **avg_loss_plot.py** and  **avg_loss_plot_test.py**.
 
 
+### Customizable implementation
+#### Requirements 
+* Python 3.7
+* numpy 1.18.1
+* tensorflow 1.14.0
+
+#### Customizable branch
+The codes in the **master branch** have been slightly modified to allow each user to perform his/her independent experiment, by configuring all the parameters and architecture's characteristic of the model possibly in new combination that have not been tested yet in [out project](https://raw.github.com/gretagrassmann/SoftwareAndComputingEXAM/master/GCN.pdf). </br>
+In the following, the content of this branch:
+* **configuration.txt**: configuration file that can be modified to obtain the desired model. The parameters and architecture's characteristics that can be modified are [here](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/Customizable/README.md) described.
+* **graph_conv.py**: defines the placeholder tensors for building the graph convolutional network. The network architecture is this time determined by the parameters selected in **configuration.txt.**
+* **train.py**: the training data are downloaded and unzipped. The model defined in **graph_conv.py** is trained on 175 pairs of proteins for the desired number of epochs (set up in **configuration.txt**). Ligand end receptor residues are fed separately into the two ”legs” of the network’s architecture defined in **graph_conv.py**.  <br />
+For each epoch, the average loss and the resulting parameter of the model are saved.
+* **test.py**: the testing data are downloaded and unzipped. The model with the parameters corresponding to the selected numbers of epochs (set up in **configuration.txt**) is tested on 55 pairs of proteins. For each model, the average loss and the area under the ROC curve are saved.
+* **avg_loss_plot.py**: plot the average loss for increasing number of epochs resulting from **train.py**.
+* **avg_loss_plot_test.py**: plot the average loss and the area under the ROC curve resulting from **train.py**.
+* **testing.py**: contains the testing of the functions defined in **graph_conv.py**.
+
+
+#### Running your experiment
+All the files that have to be read (like the data files **train.txt** and **test.txt**) or written (like the average loss for the training and testing results) are saved in the folder where the codes are downloaded. <br />
+1. Select the desired parameters (specified [here](https://github.com/gretagrassmann/SoftwareAndComputingEXAM/blob/Customizable/README.md)) value in **configuration.txt**.
+2. Run **graph_conv.py**, which defines the model that is going to be implemented. 
+3. Run **train.py**, which downloads and unzip the data in **train.txt** and trains the selected model for the desired number of epochs. For each number of epochs the average loss and the model's parameters are saved.
+3. Run **test.py**, which takes the models corresponding to the ones trained for a number of epochs selected in **configuration.txt** and tests them on the data downloaded and unzipped in **test.txt**. The average loss and the area under the ROC curve for each one of them are saved.
+
+The classification precision of the constructed model can then be visualized with **avg_loss_plot.py** and  **avg_loss_plot_test.py**.
+
 
 ## CONTACTS
 Please address any question to:
   * gretagrassmann0@gmail.com
-  * Lorenzo.rspagnoli@gmail.com
+  * lorenzo.rspagnoli@gmail.com
